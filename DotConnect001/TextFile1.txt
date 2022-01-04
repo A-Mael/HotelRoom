@@ -1,0 +1,72 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Diagnostics;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+using System.Data.SQLite;
+using System.Data.SqlTypes;
+
+namespace Test2Console
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            try
+            {
+                //SQLiteConnection.CreateFile("guy.sqlite");
+            }
+            catch
+            {
+
+            }
+
+            SQLiteConnection connection = new SQLiteConnection("Data Source=guy.sqlite");
+
+            connection.Open();
+
+            string sql = "Create Table highscores (name varchar(20),score int);";
+            SQLiteCommand command = new SQLiteCommand(sql, connection);
+            command.ExecuteNonQuery();
+
+            sql = "insert into highscores (name, score) values ('Me', 3000)";
+            command = new SQLiteCommand(sql, connection);
+            command.ExecuteNonQuery();
+
+            sql = "insert into highscores (name, score) values ('Myself', 6000)";
+            command = new SQLiteCommand(sql, connection);
+            command.ExecuteNonQuery();
+
+            sql = "insert into highscores (name, score) values ('And I', 9001)";
+            command = new SQLiteCommand(sql, connection);
+            command.ExecuteNonQuery();
+
+            sql = "select * from highscores order by score desc";
+            command = new SQLiteCommand(sql, connection);
+            SQLiteDataReader reader = command.ExecuteReader();
+            while (reader.Read())
+                Console.WriteLine("Name: " + reader["name"] + "\tScore: " + reader["score"]);
+
+            connection.Close();
+
+            Console.ReadKey();
+        }
+    }
+
+    [Table("sometable")]
+    class Element
+    {
+        [Column("id")]
+        public int Id { get; set; }
+
+        [Column("columnone")]
+        public string PropertyOne { get; set; }
+
+        [Column("columntwo")]
+        public string PropertyTwo { get; set; }
+    }
+}
